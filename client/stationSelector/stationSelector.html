@@ -1,0 +1,21 @@
+<template name="stationSelector">
+  <h1>Public Transportation App</h1>
+  <div class="row">
+    <div class="col-md-6">
+      Arrival
+      <select multiple class="form-control">
+        {{#each trainStationNames}}
+          <option>{{stop_name}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="col-md-6">
+      Departure
+      <select multiple class="form-control">
+        {{#each trainStationNames}}
+          <option>{{stop_name}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+</template>
