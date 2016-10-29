@@ -30,6 +30,12 @@ Meteor.startup(() => {
 });
 
 Meteor.publish('trainStationNames', function() {
-	var stations = Stops.find({"platform_code": "SB"}, {fields: {"stop_name": 1}});
+	var stations = Stops.find({
+		"platform_code": "SB"
+	}, {
+		fields: {
+			"stop_name": 1
+		}
+	});
 	return stations
 });
