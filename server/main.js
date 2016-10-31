@@ -29,7 +29,7 @@ Meteor.startup(() => {
   }
 });
 
-Meteor.publish('trainStationNames', function() {
+Meteor.publish('stationNames', function() {
 	var stations = Stops.find({
 		"platform_code": "SB"
 	}, {
@@ -38,4 +38,8 @@ Meteor.publish('trainStationNames', function() {
 		}
 	});
 	return stations
+});
+
+Meteor.publish('stationsCompleteData', function() {
+	return Stops.find({});
 });
