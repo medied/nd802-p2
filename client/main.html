@@ -5,5 +5,8 @@
 <body>
   <div class="container">
   {{>stationSelector}}
+  {{#if tripSelected}}
+  	{{>display}}
+  {{/if}}
   </div>
 </body>

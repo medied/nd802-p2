@@ -3,19 +3,12 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
 
-// Template.body.onCreated(function() {
-//   this.subscribe('trainStationNames');
-// });
-
-// Template.hello.helpers({
-//   counter() {
-//     return Template.instance().counter.get();
-//   },
-// });
-
-// Template.hello.events({
-//   'click button'(event, instance) {
-//     // increment the counter when button is clicked
-//     instance.counter.set(instance.counter.get() + 1);
-//   },
-// });
+Template.body.helpers({
+	tripSelected() {
+		if ((Session.get("departure") != "") && (Session.get("arrival") != "")) {
+			Session.set("tripSelected", true);
+			// console.log("tripSelected() - main: ", Session.get("tripSelected"));
+			return true;
+		}
+	}
+});
