@@ -1,6 +1,34 @@
 <template name="display">
-	<p>Trip info</p>
-	{{#if tripSelected}}
-		Some info about the trip
-	{{/if}}
+	<div>
+		<p>Trip info</p>
+		{{#if displayReady}}
+			<div class="row" id="header">
+
+				<div class="col-md-4">
+					{{departure}}
+				</div>
+				<div class="col-md-4">
+					{{arrival}}
+				</div>
+				<div class="col-md-4">
+					Trip #
+				</div>
+
+			</div>
+			<div class="row" id="tile">
+				{{#each selectedTripInfo}}
+					<div class="col-md-4">
+						{{departureTime}}
+					</div>
+					<div class="col-md-4">
+						{{arrivalTime}}
+					</div>
+					<div class="col-md-4">
+						{{tripId}}
+					</div>
+				{{/each}}
+
+			</div>
+		{{/if}}
+	</div>
 </template>

@@ -2,23 +2,66 @@ import { Template } from 'meteor/templating';
 
 import './display.html';
 
-Template.display.onCreated(function() {
-  // console.log("display.onCreated()");
-  this.subscribe('stationsCompleteData');
-});
+var tripInfoHandle;
+var bound;
 
 Template.display.helpers({
-	tripSelected() {
-		console.log("tripSelected() - display");
+	displayReady() {
+		console.log("displayReady()");
 
-		var selectedDeparture = Session.get("departure");
-		// console.log("selectedDeparture var: ", selectedDeparture);
-		var selectedArrival = Session.get("arrival");
-		// console.log("selectedArrival var: ", selectedArrival);
+		var selectedDepartureName = Session.get("departure");
+		var selectedArrivalName = Session.get("arrival");
 
-		getTripInfo(selectedDeparture, selectedArrival);
+		// First, determine bound
+		bound = getBound(selectedDepartureName, selectedArrivalName);
+
+		// Then subscribe to publication providing the following arguments: bound, departureName, arrivalName
+		// The publication should obtain departure/arrival ID from arguments, and then publish Times collection
+		// with the desired info (stop times, id)
+		tripInfoHandle = Meteor.subscribe("selectedTripInfo", selectedDepartureName, selectedArrivalName, bound);
 
 		return true;
+	},
+	selectedTripInfo() {
+		console.log("selectedTripInfo() helper");
+
+		var selectedTripInfo = [];
+
+		if (tripInfoHandle.ready() == true) {
+			var tripTimesRaw = Times.find({}).fetch();
+			for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
+			  var currentTrip = tripTimesRaw[i]["trip_id"];
+			  var outerElement = {};
+			  var innerElement = [];
+			  var tripMatchCount = 0;
+
+			  for ( var j in tripTimesRaw){
+			    if (tripTimesRaw[j]["trip_id"] === currentTrip){
+			      tripMatchCount++;
+			      var stopId = tripTimesRaw[j]["stop_id"];
+			      var departureTime = tripTimesRaw[j]["departure_time"];
+			      if (bound == "SB" && tripMatchCount == 1) {
+			      	outerElement.departureTime = departureTime;
+			      } else if (bound == "SB" && tripMatchCount == 2) {
+			      	outerElement.arrivalTime = departureTime;
+			      } else if (bound == "NB" && tripMatchCount == 1) {
+			      	outerElement.arrivalTime = departureTime;
+			      } else if (bound == "NB" && tripMatchCount == 2) {
+			      	outerElement.departureTime = departureTime;
+			      }
+			  	}
+			 	}
+			 	outerElement.tripId = currentTrip;
+			 	selectedTripInfo.push(outerElement);
+			}
+		}
+		return selectedTripInfo;
+	},
+	departure(){
+		return Session.get("departure");
+	},
+	arrival(){
+		return Session.get("arrival");
 	}
 });
 
@@ -26,66 +69,54 @@ Template.display.helpers({
 ////////////// Helper functions //////////////
 
 // Params: departureStopName, arrivalStopName
-// Outpus departure and arrival times for the appropriate bound
-function getTripInfo(departureStopName, arrivalStopName) {
-	console.log("getTripInfo() invoked");
-	
-	// First, determine bound
-	var bound = determineBound(departureStopName, arrivalStopName);
-	
-	// Then, retrieve stop_ids for both departure and arrival
-	var departureID = determineStationID(departureStopName, bound);
-	var arrivalID = determineStationID(arrivalStopName, bound);
-
-	console.log("getTripInfo() - departureID retrieved: ", departureID);
-	console.log("getTripInfo() - arrivalID retrieved: ", arrivalID);
-
-	// Next, query the Times collection to obtain stop times for the specified trip 
-	if(typeof(departureID) != "undefined" || typeof(arrivalID) != "undefined") {
-		console.log("Calling stopTimesQuery()...");
-		Meteor.call("stopTimesQuery", departureID, arrivalID, function(error, result) {
-			if (error) {
-				console.log("stopTimesQuery() callback - error: ", error);
-			} else {
-				console.log("stopTimesQuery() callback - result: ", result);
-			}
-		});
-	}
-
-	return 
-}
-
-// Params: departureStopName, arrivalStopName
 // Outputs the trip direction: whether north or south bound
-function determineBound(departureStopName, arrivalStopName) {
-	return 'SB'
-}
-
-
-// Params: stopName, bound
-// Outputs the stopID
-function determineStationID(stopName, bound) {
-	console.log("determineStationID() invoked");
-	// console.log("Params: ", stopName, bound);
-	var stopCursor = Stops.find({
-	  "stop_name": stopName,
-	  "platform_code": bound
-	  },{
-	  fields: {"stop_id": 1}
-	});
-	
-	// console.log(stopCursor.fetch());
-	if (stopCursor.fetch().length != 0) {
-		var stopID = stopCursor.fetch()[0]["stop_id"];
+function getBound(departureStopName, arrivalStopName) {
+	console.log("getBound() invoked");
+	var stationsDict = {
+		"San Francisco Caltrain": 0,
+		"22nd St Caltrain": 1,
+		"Bayshore Caltrain": 2,
+		"So. San Francisco Caltrain Station": 3,
+		"San Bruno Caltrain": 4,
+		"Millbrae Caltrain": 5,
+		"Broadway Caltrain": 6,
+		"Burlingame Caltrain": 7,
+		"San Mateo Caltrain": 8,
+		"Hayward Park Caltrain": 9,
+		"Hillsdale Caltrain": 10,
+		"Belmont Caltrain": 11,
+		"San Carlos Caltrain": 12,
+		"Redwood City Caltrain": 13,
+		"Atherton Caltrain": 14,
+		"Menlo Park Caltrain": 15,
+		"Palo Alto Caltrain": 16,
+		"California Ave Caltrain": 17,
+		"San Antonio Caltrain": 18,
+		"Mt View Caltrain": 19,
+		"Sunnyvale Caltrain": 20,
+		"Lawrence Caltrain": 21,
+		"Santa Clara Caltrain": 22,
+		"College Park Caltrain": 23,
+		"San Jose Diridon Caltrain": 24,
+		"Tamien Caltrain": 25,
+		"Capitol Caltrain": 26,
+		"Blossom Hill Caltrain": 27,
+		"Morgan Hill Caltrain":28,
+		"San Martin Caltrain": 29,
+		"Gilroy Caltrain":30
 	}
-
-	return stopID;
-}
-
-// Params: can take in the stopTimesQuery() result, plus whatever else neeeded (stop names?)
-// Output should be the data organized and rendered in display.html in the desired way
-
-function displayTripInfo() {
-	// TODO
-	// Ideally need  to sort stop times by chronological order
+	if (stationsDict[departureStopName] < stationsDict[arrivalStopName]) {
+		return "SB";
+	}else if (stationsDict[departureStopName] > stationsDict[arrivalStopName]) {
+		return "NB";
+	}else {
+		// TODO: returning SB for now so the app doesn't break
+		// Think what we could do is have another template under main.html, could set a 
+		// Session var here to display a select again template
+		// Or simply display whatever the welcoming template is?
+		// Am I abusing from Session vars though?  
+		// Android app has no 'welcome'view, just shows trips directly
+		// Does have a view for a 'select again' template
+		return "SB";
+	}
 }
