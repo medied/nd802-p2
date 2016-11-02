@@ -16,8 +16,6 @@ Meteor.publish('selectedTripInfo', function(selectedDepartureName, selectedArriv
 	var departureId = departureIdCursor.fetch()[0]["stop_id"];
 	var arrivalId = arrivalIdCursor.fetch()[0]["stop_id"];
 
-	// console.log(departureId, arrivalId);
-
 	var timesCursor = Times.find({
 		$or: [
 			{"stop_id": departureId},
@@ -30,8 +28,6 @@ Meteor.publish('selectedTripInfo', function(selectedDepartureName, selectedArriv
 				"departure_time": 1
 			}
 		});
-
-	// console.log(timesCursor);
 
 	return timesCursor;
 
