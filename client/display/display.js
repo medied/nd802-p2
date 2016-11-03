@@ -23,8 +23,6 @@ Template.display.helpers({
 		return true;
 	},
 	selectedTripInfo() {
-		console.log("selectedTripInfo() helper");
-
 		var selectedTripInfo = [];
 
 		if (tripInfoHandle.ready() == true) {
@@ -71,7 +69,6 @@ Template.display.helpers({
 // Params: departureStopName, arrivalStopName
 // Outputs the trip direction: whether north or south bound
 function getBound(departureStopName, arrivalStopName) {
-	console.log("getBound() invoked");
 	var stationsDict = {
 		"San Francisco Caltrain": 0,
 		"22nd St Caltrain": 1,
