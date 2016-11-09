@@ -42,7 +42,7 @@ self.addEventListener('fetch', (event) => {
       }
 
       if (/html/.test(contentType)) {
-        caches.open(version).then(cache => cache.put(HTMLToCache, response.clone()));
+        caches.open(version).then(cache => cache.put(HTMLToCache, clonedResponse));
       } else {
         // Delete old version of a file
         if (hasHash(event.request.url)) {
@@ -53,7 +53,7 @@ self.addEventListener('fetch', (event) => {
           })));
         }
 
-        caches.open(version).then(cache => cache.put(event.request, response.clone()));
+        caches.open(version).then(cache => cache.put(event.request, clonedResponse));
       }
       return response;
     }).catch(() => {
@@ -61,11 +61,11 @@ self.addEventListener('fetch', (event) => {
       // If the request URL hasn't been served from cache and isn't sockjs we suppose it's HTML
       else if (!/\/sockjs\//.test(event.request.url)) return caches.match(HTMLToCache);
       // Only for sockjs
-      return new Response('No connection to the server', {
-        status: 503,
-        statusText: 'No connection to the server',
-        headers: new Headers({ 'Content-Type': 'text/plain' }),
-      });
+      // return new Response('No connection to the server', {
+      //   status: 503,
+      //   statusText: 'No connection to the server',
+      //   headers: new Headers({ 'Content-Type': 'text/plain' }),
+      // });
     });
   })
   );
