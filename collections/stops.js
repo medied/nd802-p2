@@ -1,4 +1,4 @@
-Stops = new Meteor.Collection('stops');
+Stops = new Ground.Collection('stops');
 
 StopsSchema = new SimpleSchema({
 	"stop_lat": {

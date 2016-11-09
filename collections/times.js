@@ -1,4 +1,4 @@
-Times = new Meteor.Collection('times');
+Times = new Ground.Collection('times');
 
 TimesSchema = new SimpleSchema({
 	"pickup_type": {

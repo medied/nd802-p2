@@ -1,4 +1,4 @@
-Trips = new Meteor.Collection('trips');
+Trips = new Ground.Collection('trips');
 
 TripsSchema = new SimpleSchema({
 	"bikes_allowed": {
