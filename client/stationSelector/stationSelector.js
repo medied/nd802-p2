@@ -4,8 +4,8 @@ import './stationSelector.html';
 
 Template.stationSelector.onCreated(function() {
   this.subscribe('stationNames');
-  Session.set("departure", "");
-  Session.set("arrival", "");
+  Session.set("departure", "San Francisco Caltrain");
+  Session.set("arrival", "Palo Alto Caltrain");
 });
 
 Template.stationSelector.helpers({
