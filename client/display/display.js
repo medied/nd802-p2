@@ -12,45 +12,41 @@ Template.display.onCreated(function () {
 Template.display.helpers({
 	selectedTripInfo() {
 		var selectedTripInfo = [];
-
-		if (true) {
 			
-			var departureName = Session.get("departure");
-			var arrivalName = Session.get("arrival");
-			var bound = getBound(departureName, arrivalName);
-		
-			var departureId = getStationId(departureName, bound);
-			var arrivalId = getStationId(arrivalName, bound);
+		var departureName = Session.get("departure");
+		var arrivalName = Session.get("arrival");
+		var bound = getBound(departureName, arrivalName);
+	
+		var departureId = getStationId(departureName, bound);
+		var arrivalId = getStationId(arrivalName, bound);
 
-			var tripTimesRaw = getTripInfo(departureId, arrivalId);
-			console.log("tripTimesRaw: ", tripTimesRaw);
-			
-			for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
-			  var currentTrip = tripTimesRaw[i]["trip_id"];
-			  var outerElement = {};
-			  var innerElement = [];
-			  var tripMatchCount = 0;
-			  for ( var j in tripTimesRaw){
-			    if (tripTimesRaw[j]["trip_id"] === currentTrip){
-			      tripMatchCount++;
-			      var stopId = tripTimesRaw[j]["stop_id"];
-			      var departureTime = tripTimesRaw[j]["departure_time"];
-			      if (bound == "SB" && tripMatchCount == 1) {
-			      	outerElement.departureTime = departureTime;
-			      } else if (bound == "SB" && tripMatchCount == 2) {
-			      	outerElement.arrivalTime = departureTime;
-			      } else if (bound == "NB" && tripMatchCount == 1) {
-			      	outerElement.arrivalTime = departureTime;
-			      } else if (bound == "NB" && tripMatchCount == 2) {
-			      	outerElement.departureTime = departureTime;
-			      }
-			  	}
-			 	}
-			 	outerElement.tripId = currentTrip;
-			 	selectedTripInfo.push(outerElement);
-			}
+		var tripTimesRaw = getTripInfo(departureId, arrivalId);			
+		for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
+		  var currentTrip = tripTimesRaw[i]["trip_id"];
+		  var outerElement = {};
+		  var innerElement = [];
+		  var tripMatchCount = 0;
+		  for ( var j in tripTimesRaw){
+		    if (tripTimesRaw[j]["trip_id"] === currentTrip){
+		      tripMatchCount++;
+		      var stopId = tripTimesRaw[j]["stop_id"];
+		      var departureTime = tripTimesRaw[j]["departure_time"];
+		      if (bound == "SB" && tripMatchCount == 1) {
+		      	outerElement.departureTime = departureTime;
+		      } else if (bound == "SB" && tripMatchCount == 2) {
+		      	outerElement.arrivalTime = departureTime;
+		      } else if (bound == "NB" && tripMatchCount == 1) {
+		      	outerElement.arrivalTime = departureTime;
+		      } else if (bound == "NB" && tripMatchCount == 2) {
+		      	outerElement.departureTime = departureTime;
+		      }
+		  	}
+		 	}
+		 	outerElement.tripId = currentTrip;
+		 	selectedTripInfo.push(outerElement);
 		}
 
+		appendDuration(selectedTripInfo);
 		return selectedTripInfo;
 	},
 	departure(){
@@ -70,6 +66,7 @@ Template.display.helpers({
 		getBound()
 		getStationId()
 		getTripInfo()
+		appendDuration()
 
  ***
  ***
@@ -177,3 +174,34 @@ function getTripInfo(departureId, arrivalId) {
 
 	return timesCursor.fetch();
 }
+
+/*
+ *
+	appendDuration()
+	Params: selectedTripInfo array
+	Outputs the same array with an added field for the duration of each trip
+ *
+ */
+function appendDuration(selectedTripInfo) {
+	var dateHolder = "01/01/2000";
+	for (trip in selectedTripInfo) {
+		var departure = dateHolder + selectedTripInfo[trip]["departureTime"],
+				arrival = dateHolder + selectedTripInfo[trip]["arrivalTime"];
+		var duration = moment.utc(moment(arrival,"DD/MM/YYYY HH:mm:ss").diff(moment(departure,"DD/MM/YYYY HH:mm:ss"))).format("HH:mm:ss");
+
+		selectedTripInfo[trip]["duration"] = duration;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

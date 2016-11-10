@@ -4,27 +4,33 @@
 		
 		<div class="row" id="header">
 
-			<div class="col-md-4">
+			<div class="col-xs-3">
 				{{departure}}
 			</div>
-			<div class="col-md-4">
+			<div class="col-xs-3">
 				{{arrival}}
 			</div>
-			<div class="col-md-4">
+			<div class="col-xs-3">
 				Trip #
+			</div>
+			<div class="col-xs-3">
+				Duration
 			</div>
 
 		</div>
 		<div class="row" id="tile">
 			{{#each selectedTripInfo}}
-				<div class="col-md-4">
+				<div class="col-xs-3">
 					{{departureTime}}
 				</div>
-				<div class="col-md-4">
+				<div class="col-xs-3">
 					{{arrivalTime}}
 				</div>
-				<div class="col-md-4">
+				<div class="col-xs-3">
 					{{tripId}}
+				</div>
+				<div class="col-xs-3">
+					{{duration}}
 				</div>
 			{{/each}}
 
