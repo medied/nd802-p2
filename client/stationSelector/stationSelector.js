@@ -10,7 +10,14 @@ Template.stationSelector.onCreated(function() {
 
 Template.stationSelector.helpers({
 	trainStationNames() {
-		return Stops.find({});
+		var stationNames = Stops.find({
+			"platform_code": "SB"
+		},{
+			fields: {
+				"stop_name": 1
+			}
+		});
+		return stationNames;
 	}
 });
 

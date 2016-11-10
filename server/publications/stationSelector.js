@@ -1,9 +1,9 @@
 Meteor.publish('stationNames', function() {
-	var stations = Stops.find({
-		"platform_code": "SB"
-	}, {
+	var stations = Stops.find({}, {
 		fields: {
-			"stop_name": 1
+			"stop_name": 1,
+			"stop_id": 1,
+			"platform_code": 1
 		}
 	});
 	return stations;

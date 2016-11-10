@@ -5,34 +5,35 @@ import './display.html';
 var tripInfoHandle;
 var bound;
 
+Template.display.onCreated(function () {
+	console.log("display.onCreated");
+	Meteor.subscribe("tripInfo");
+});
+
 Template.display.helpers({
-	displayReady() {
-		console.log("displayReady()");
-
-		var selectedDepartureName = Session.get("departure");
-		var selectedArrivalName = Session.get("arrival");
-
-		// First, determine bound
-		bound = getBound(selectedDepartureName, selectedArrivalName);
-
-		// Then subscribe to publication providing the following arguments: bound, departureName, arrivalName
-		// The publication should obtain departure/arrival ID from arguments, and then publish Times collection
-		// with the desired info (stop times, id)
-		tripInfoHandle = Meteor.subscribe("selectedTripInfo", selectedDepartureName, selectedArrivalName, bound);
-
-		return true;
-	},
 	selectedTripInfo() {
 		var selectedTripInfo = [];
 
-		if (tripInfoHandle.ready() == true) {
-			var tripTimesRaw = Times.find({}).fetch();
+		console.log("selectedTripInfo() invoked");
+
+		if (true) {
+			
+			var departureName = Session.get("departure");
+			var arrivalName = Session.get("arrival");
+			var bound = getBound(departureName, arrivalName);
+		
+			var departureId = getStationId(departureName, bound);
+			var arrivalId = getStationId(arrivalName, bound);
+
+			var tripTimesRaw = getTripInfo(departureId, arrivalId);
+			console.log("tripTimesRaw: ", tripTimesRaw);
+			
+			console.log("Entering for-loops...");
 			for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
 			  var currentTrip = tripTimesRaw[i]["trip_id"];
 			  var outerElement = {};
 			  var innerElement = [];
 			  var tripMatchCount = 0;
-
 			  for ( var j in tripTimesRaw){
 			    if (tripTimesRaw[j]["trip_id"] === currentTrip){
 			      tripMatchCount++;
@@ -52,7 +53,9 @@ Template.display.helpers({
 			 	outerElement.tripId = currentTrip;
 			 	selectedTripInfo.push(outerElement);
 			}
+			console.log("Exited for-loops");
 		}
+
 		return selectedTripInfo;
 	},
 	departure(){
@@ -64,11 +67,28 @@ Template.display.helpers({
 });
 
 
-////////////// Helper functions //////////////
+/***
+ ***
+ ***
 
-// Params: departureStopName, arrivalStopName
-// Outputs the trip direction: whether north or south bound
+	Helper functions below:
+		getBound()
+		getStationId()
+		getTripInfo()
+
+ ***
+ ***
+ ***/
+
+/*
+ *
+	getBound()
+	Params: departureStopName, arrivalStopName
+	Outputs the trip direction: whether north or south bound
+ *
+ */
 function getBound(departureStopName, arrivalStopName) {
+	console.log("getBound()");
 	var stationsDict = {
 		"San Francisco Caltrain": 0,
 		"22nd St Caltrain": 1,
@@ -116,4 +136,52 @@ function getBound(departureStopName, arrivalStopName) {
 		// Does have a view for a 'select again' template
 		return "SB";
 	}
+}
+
+/*
+ *
+	getStationId()
+	Params: stationName, bound
+	Outputs the stationId for provided inputs
+ *
+ */
+function getStationId(stationName, bound) {
+	console.log("getStationId()");
+	var stationIdCursor = Stops.find({
+		"stop_name": stationName,
+		"platform_code": bound
+	},{
+		fields: {
+			"stop_id": 1
+		}
+	});
+	
+	var stationId = stationIdCursor.fetch()[0]["stop_id"];
+
+	return stationId;
+}
+
+/*
+ *
+	getTripInfo()
+	Params: departureId, arrivalId
+	Outputs the trip info for selected departure and arrival stations
+ *
+ */
+function getTripInfo(departureId, arrivalId) {
+	console.log("getTripInfo()");
+	var timesCursor = Times.find({
+		$or: [
+			{"stop_id": departureId},
+			{"stop_id": arrivalId}
+		]
+	}, {
+		fields: {
+			"trip_id": 1,
+			"stop_id": 1,
+			"departure_time": 1
+		}
+	});
+
+	return timesCursor.fetch();
 }
