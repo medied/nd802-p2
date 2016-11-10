@@ -6,7 +6,6 @@ Template.body.helpers({
 	tripSelected() {
 		if ((Session.get("departure") != "") && (Session.get("arrival") != "")) {
 			Session.set("tripSelected", true);
-			console.log("tripSelected()");
 			return true;
 		}
 	}

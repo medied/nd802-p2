@@ -6,15 +6,12 @@ var tripInfoHandle;
 var bound;
 
 Template.display.onCreated(function () {
-	console.log("display.onCreated");
 	Meteor.subscribe("tripInfo");
 });
 
 Template.display.helpers({
 	selectedTripInfo() {
 		var selectedTripInfo = [];
-
-		console.log("selectedTripInfo() invoked");
 
 		if (true) {
 			
@@ -28,7 +25,6 @@ Template.display.helpers({
 			var tripTimesRaw = getTripInfo(departureId, arrivalId);
 			console.log("tripTimesRaw: ", tripTimesRaw);
 			
-			console.log("Entering for-loops...");
 			for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
 			  var currentTrip = tripTimesRaw[i]["trip_id"];
 			  var outerElement = {};
@@ -53,7 +49,6 @@ Template.display.helpers({
 			 	outerElement.tripId = currentTrip;
 			 	selectedTripInfo.push(outerElement);
 			}
-			console.log("Exited for-loops");
 		}
 
 		return selectedTripInfo;
@@ -88,7 +83,6 @@ Template.display.helpers({
  *
  */
 function getBound(departureStopName, arrivalStopName) {
-	console.log("getBound()");
 	var stationsDict = {
 		"San Francisco Caltrain": 0,
 		"22nd St Caltrain": 1,
@@ -146,7 +140,6 @@ function getBound(departureStopName, arrivalStopName) {
  *
  */
 function getStationId(stationName, bound) {
-	console.log("getStationId()");
 	var stationIdCursor = Stops.find({
 		"stop_name": stationName,
 		"platform_code": bound
@@ -169,7 +162,6 @@ function getStationId(stationName, bound) {
  *
  */
 function getTripInfo(departureId, arrivalId) {
-	console.log("getTripInfo()");
 	var timesCursor = Times.find({
 		$or: [
 			{"stop_id": departureId},
