@@ -11,16 +11,24 @@ Template.display.onCreated(function () {
 
 Template.display.helpers({
 	selectedTripInfo() {
+		// selectedTripInfo() reads user input and provides the appropiate trip information
 		var selectedTripInfo = [];
 			
+		// First, establish user input stations and determine bound 
 		var departureName = Session.get("departure");
 		var arrivalName = Session.get("arrival");
 		var bound = getBound(departureName, arrivalName);
 	
+		// Then, obtain statio IDs from its name and trip bound
 		var departureId = getStationId(departureName, bound);
 		var arrivalId = getStationId(arrivalName, bound);
 
+		// Next, query to obtain the raw or unprocessed times data for the selected trip
 		var tripTimesRaw = getTripInfo(departureId, arrivalId);			
+
+		// Now we can process the raw data.
+		// Idea is to group by trip ID so each object of the selectedTripInfo array will have 
+		// trip information (arrival time, departure time, etc) per the trip ID.
 		for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
 		  var currentTrip = tripTimesRaw[i]["trip_id"];
 		  var outerElement = {};
@@ -46,8 +54,10 @@ Template.display.helpers({
 		 	selectedTripInfo.push(outerElement);
 		}
 
+		// Further process to remove uncessary info and add trip duration
 		selectedTripInfo = stripDown(selectedTripInfo);
 		appendDuration(selectedTripInfo);
+		
 		return selectedTripInfo;
 	},
 	departure(){
@@ -68,6 +78,7 @@ Template.display.helpers({
 		getStationId()
 		getTripInfo()
 		appendDuration()
+		stripDown()
 
  ***
  ***
