@@ -61,11 +61,11 @@ self.addEventListener('fetch', (event) => {
       // If the request URL hasn't been served from cache and isn't sockjs we suppose it's HTML
       else if (!/\/sockjs\//.test(event.request.url)) return caches.match(HTMLToCache);
       // Only for sockjs
-      // return new Response('No connection to the server', {
-      //   status: 503,
-      //   statusText: 'No connection to the server',
-      //   headers: new Headers({ 'Content-Type': 'text/plain' }),
-      // });
+      return new Response('No connection to the server', {
+        status: 503,
+        statusText: 'No connection to the server',
+        headers: new Headers({ 'Content-Type': 'text/plain' }),
+      });
     });
   })
   );
@@ -84,6 +84,3 @@ function hasSameHash(firstUrl, secondUrl) {
     return /\?hash=(.*)/.exec(firstUrl)[1] === /\?hash=(.*)/.exec(secondUrl)[1];
   }
 }
-
-// Service worker created by Ilan Schemoul alias NitroBAY as a specific Service Worker for Meteor
-// Please see https://github.com/NitroBAY/meteor-service-worker for the official project source
