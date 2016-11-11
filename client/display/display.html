@@ -1,9 +1,6 @@
 <template name="display">
 	<div>
-		<p>Trip info</p>
-		
 		<div class="row" id="header">
-
 			<div class="col-xs-3">
 				{{departure}}
 			</div>
@@ -16,7 +13,7 @@
 			<div class="col-xs-3">
 				Duration
 			</div>
-
+		
 		</div>
 		<div class="row" id="tile">
 			{{#each selectedTripInfo}}
@@ -33,8 +30,6 @@
 					{{duration}}
 				</div>
 			{{/each}}
-
 		</div>
-
 	</div>
 </template>

@@ -46,6 +46,7 @@ Template.display.helpers({
 		 	selectedTripInfo.push(outerElement);
 		}
 
+		selectedTripInfo = stripDown(selectedTripInfo);
 		appendDuration(selectedTripInfo);
 		return selectedTripInfo;
 	},
@@ -179,7 +180,7 @@ function getTripInfo(departureId, arrivalId) {
  *
 	appendDuration()
 	Params: selectedTripInfo array
-	Outputs the same array with an added field for the duration of each trip
+	Adds a field for the duration of each trip to the provided array
  *
  */
 function appendDuration(selectedTripInfo) {
@@ -191,6 +192,25 @@ function appendDuration(selectedTripInfo) {
 
 		selectedTripInfo[trip]["duration"] = duration;
 	}
+}
+
+/*
+ *
+	stripDown()
+	Params: selectedTripInfo array
+	Outputs the same (reduced) array without weekend trips or invalid matches
+ *
+ */
+function stripDown(selectedTripInfo) {
+	var stripped = [];
+	for (trip in selectedTripInfo) {
+		if (selectedTripInfo[trip]["tripId"].slice(-1) !== 'a' && selectedTripInfo[trip]["tripId"].slice(-1) !== 'u' ) {
+			if (typeof(selectedTripInfo[trip]["departureTime"]) !== 'undefined' && typeof(selectedTripInfo[trip]["arrivalTime"]) !== 'undefined') {
+				stripped.push(selectedTripInfo[trip]);
+			}
+		}
+	}
+	return stripped;
 }
 
 
