@@ -212,16 +212,3 @@ function stripDown(selectedTripInfo) {
 	}
 	return stripped;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
