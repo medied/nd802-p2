@@ -29,35 +29,38 @@ Template.display.helpers({
 		// Now we can process the raw data.
 		// Idea is to group by trip ID so each object of the selectedTripInfo array will have 
 		// trip information (arrival time, departure time, etc) per the trip ID.
-		for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
-		  var currentTrip = tripTimesRaw[i]["trip_id"];
-		  var outerElement = {};
-		  var innerElement = [];
-		  var tripMatchCount = 0;
-		  for ( var j in tripTimesRaw){
-		    if (tripTimesRaw[j]["trip_id"] === currentTrip){
-		      tripMatchCount++;
-		      var stopId = tripTimesRaw[j]["stop_id"];
-		      var departureTime = tripTimesRaw[j]["departure_time"];
-		      if (bound == "SB" && tripMatchCount == 1) {
-		      	outerElement.departureTime = departureTime;
-		      } else if (bound == "SB" && tripMatchCount == 2) {
-		      	outerElement.arrivalTime = departureTime;
-		      } else if (bound == "NB" && tripMatchCount == 1) {
-		      	outerElement.arrivalTime = departureTime;
-		      } else if (bound == "NB" && tripMatchCount == 2) {
-		      	outerElement.departureTime = departureTime;
-		      }
-		  	}
-		 	}
-		 	outerElement.tripId = currentTrip;
-		 	selectedTripInfo.push(outerElement);
+		if (tripTimesRaw.length !== 0) {
+			for (var i = 0; i <= tripTimesRaw.length/2 + 1; i++){
+			  var currentTrip = tripTimesRaw[i]["trip_id"];
+			  var outerElement = {};
+			  var innerElement = [];
+			  var tripMatchCount = 0;
+			  for ( var j in tripTimesRaw){
+			    if (tripTimesRaw[j]["trip_id"] === currentTrip){
+			      tripMatchCount++;
+			      var stopId = tripTimesRaw[j]["stop_id"];
+			      var departureTime = tripTimesRaw[j]["departure_time"];
+			      if (bound == "SB" && tripMatchCount == 1) {
+			      	outerElement.departureTime = departureTime;
+			      } else if (bound == "SB" && tripMatchCount == 2) {
+			      	outerElement.arrivalTime = departureTime;
+			      } else if (bound == "NB" && tripMatchCount == 1) {
+			      	outerElement.arrivalTime = departureTime;
+			      } else if (bound == "NB" && tripMatchCount == 2) {
+			      	outerElement.departureTime = departureTime;
+			      }
+			  	}
+			 	}
+			 	outerElement.tripId = currentTrip;
+			 	selectedTripInfo.push(outerElement);
+			}	
 		}
+		
 
 		// Further process to remove uncessary info and add trip duration
 		selectedTripInfo = stripDown(selectedTripInfo);
 		appendDuration(selectedTripInfo);
-		
+
 		return selectedTripInfo;
 	},
 	departure(){
@@ -69,9 +72,9 @@ Template.display.helpers({
 });
 
 
-/***
- ***
- ***
+/***********
+ ***********
+ ***********
 
 	Helper functions below:
 		getBound()
@@ -80,9 +83,9 @@ Template.display.helpers({
 		appendDuration()
 		stripDown()
 
- ***
- ***
- ***/
+ ***********
+ ***********
+ ***********/
 
 /*
  *
@@ -157,8 +160,12 @@ function getStationId(stationName, bound) {
 			"stop_id": 1
 		}
 	});
-	
-	var stationId = stationIdCursor.fetch()[0]["stop_id"];
+
+	var stationIdFetched = stationIdCursor.fetch()
+
+	if (stationIdFetched.length !== 0) {
+		var stationId = stationIdCursor.fetch()[0]["stop_id"];
+	}
 
 	return stationId;
 }
@@ -171,20 +178,26 @@ function getStationId(stationName, bound) {
  *
  */
 function getTripInfo(departureId, arrivalId) {
-	var timesCursor = Times.find({
+	var tripInfo = [];
+	if (typeof(departureId) !== "undefined" && typeof(arrivalId) !== "undefined") {
+		var timesCursor = Times.find({
 		$or: [
 			{"stop_id": departureId},
 			{"stop_id": arrivalId}
 		]
-	}, {
-		fields: {
-			"trip_id": 1,
-			"stop_id": 1,
-			"departure_time": 1
-		}
-	});
+		}, {
+			fields: {
+				"trip_id": 1,
+				"stop_id": 1,
+				"departure_time": 1
+			}
+		});
 
-	return timesCursor.fetch();
+		tripInfo = timesCursor.fetch();
+		return tripInfo;
+	}else {
+		return tripInfo;
+	}	
 }
 
 /*
