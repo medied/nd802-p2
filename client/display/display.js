@@ -214,7 +214,11 @@ function appendDuration(selectedTripInfo) {
 				arrival = dateHolder + selectedTripInfo[trip]["arrivalTime"];
 		var duration = moment.utc(moment(arrival,"DD/MM/YYYY HH:mm:ss").diff(moment(departure,"DD/MM/YYYY HH:mm:ss"))).format("HH:mm:ss");
 
-		selectedTripInfo[trip]["duration"] = duration;
+		if (duration !== "Invalid date") {
+			selectedTripInfo[trip]["duration"] = duration;
+		} else {
+			selectedTripInfo[trip]["duration"] = "1:00:00";
+		}
 	}
 }
 
