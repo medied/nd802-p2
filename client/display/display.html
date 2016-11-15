@@ -15,20 +15,24 @@
 			</div>
 		
 		</div>
-		<div class="row" id="tile">
+		<hr>
+		<div class="row">
 			{{#each selectedTripInfo}}
-				<div class="col-xs-3">
-					{{departureTime}}
+				<div class="row flex-items-xs-middle" id="tile">
+					<div class="col-xs-3">
+						{{departureTime}}
+					</div>
+					<div class="col-xs-3">
+						{{arrivalTime}}
+					</div>
+					<div class="col-xs-3">
+						{{tripId}}
+					</div>
+					<div class="col-xs-3">
+						{{duration}}
+					</div>
 				</div>
-				<div class="col-xs-3">
-					{{arrivalTime}}
-				</div>
-				<div class="col-xs-3">
-					{{tripId}}
-				</div>
-				<div class="col-xs-3">
-					{{duration}}
-				</div>
+				<hr>
 			{{/each}}
 		</div>
 	</div>
