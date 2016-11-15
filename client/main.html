@@ -9,5 +9,10 @@
   {{#if tripSelected}}
   	{{>display}}
   {{/if}}
+  {{#if sameStation}}
+  	<div id="sameStation">
+  	You selected the same station for departure and arrival, please select a different station.
+  	</div>
+  {{/if}}
   </div>
 </body>

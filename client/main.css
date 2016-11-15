@@ -12,3 +12,8 @@
 #tile {
 	text-align: center;
 }
+
+#sameStation {
+	text-align: center;
+	font-style: italic;
+}
