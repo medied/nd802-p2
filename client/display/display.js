@@ -57,7 +57,7 @@ Template.display.helpers({
 		}
 		
 
-		// Further process to remove uncessary info and add trip duration
+		// Further process to remove unnecessary info and add trip duration
 		selectedTripInfo = stripDown(selectedTripInfo);
 		appendDuration(selectedTripInfo);
 
