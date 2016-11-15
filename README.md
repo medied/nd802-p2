@@ -20,8 +20,8 @@ Once in the right directory, type the `meteor run --production` command, your ap
 
 ## Notes on deployment 
 
-Meteor's build process fairly simplistic. According to the [docs](https://guide.meteor.com/build-tool.html): 
+- Meteor's build process fairly simplistic. According to the [docs](https://guide.meteor.com/build-tool.html): 
 
 > The Meteor build tool is what compiles, runs, deploys, and publishes all of your Meteor apps and packages. It’s Meteor’s built-in solution to the problems also solved by tools like Grunt, Gulp, Webpack, Browserify, Nodemon, and many others, and uses many popular Node.js tools like Babel and UglifyJS internally to enable a seamless experience.
 
-Also, the SW.js
+- Special thanks to [NitroBAY](https://github.com/NitroBAY/meteor-service-worker) for insight regarding Service Workers in Meteor.
